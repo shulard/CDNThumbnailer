@@ -1,0 +1,14 @@
+#System files
+.DS_Store
+
+#IDE project files
+*.esproj
+nbproject
+*.sublime-project
+*.sublime-workspace
+
+#Composer
+composer.lock
+
+#Project specific
+cache

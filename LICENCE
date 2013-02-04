@@ -1,19 +1,4 @@
-# CDNThumbnailer
-
-CDNThumbnailer is a php tool for dynamically image resizing. It is distributed with a cache and a CDN controller to allow quick files access. It include compatibility with GD and ImageMagick php extension.
-
-This tool is written in **PHP 5.2** to maximize compatibility (but in a **PHP 5.3** style).
-
-## Documentation, help
-
-You can find documentation here: 
-
-If you find a bug, please submit an issue. If you want to contribute you're welcome!
-
-
-## Licence
-
-Copyright (c) 2013 **Stéphane HULARD**
+Copyright (c) 2013 Stéphane HULARD
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

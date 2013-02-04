@@ -1,0 +1,13 @@
+{
+    "name": "shulard/cdn-thumbnailer",
+    "description": "A php library which resize images dynamically. A proxy allow to use it with a cache for an image CDN.",
+    "keywords": ["php","thumbnail","cdn","generator"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Stephane HULARD",
+            "email": "s.hulard@chstudio.fr"
+        }
+    ],
+    "require": {}
+}

@@ -6,7 +6,23 @@ This tool is written in **PHP 5.2** to maximize compatibility (but in a **PHP 5.
 
 ## Documentation, help
 
-You can find documentation here: 
+This tool can be used as a library inside a project for image resizing. It can also be included as a HTTP Proxy for image resizing.
+It is compatible with external images and allow dynamic resizing and serving of images.
+
+If you need to use it as a proxy, there are some initialization to perform:
+
+ - Copy [SAMPLE.htaccess](SAMPLE.htaccess) to *.htaccess* (this new file is ignored by .gitignore), replace **%{DOCUMENT_ROOT}/cache** by the absolute path to the cache folder and **RewriteBase** by the valid one in your project.
+ - Copy [config/SAMPLE.config.inc.php](config/SAMPLE.config.inc.php) to *config/config.inc.php* and update the **CACHE_FOLDER** constant if you use a custom layout (let it if not).
+ 
+To call the CDN, you need to use URLs like that:
+
+ - **http://[yourhost]/28x28/path/to/your/image.png** : This URL request the file *cache/28x28/path/to/your/image.png* to be served. If exists, it is returned, else the file *cache/original/path/to/your/image.png* will be used as master for resize (if this file does not exists, HTTP Status code is returned as 404).
+ - If you use external images as content source, you need to defined the scheme in the URL: **http://[yourhost]/http/28x28/host.com/distant/your/image.png**. This URL will download the image http://host.com/distant/your/image.png if exists and use it as master for resizing. The distant image is put in the original folder to forbid multiple downloads of the same image.
+
+HTTP Status code are used to manage errors:
+
+ - If the original file to be used for resize does not exists, the **HTTP 404** code is sent
+ - If the server encounter a problem during image processing, the **HTTP 500** code is sent
 
 If you find a bug, please submit an issue. If you want to contribute you're welcome!
 

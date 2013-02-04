@@ -12,3 +12,5 @@ composer.lock
 
 #Project specific
 cache
+config/config.inc.php
+.htaccess

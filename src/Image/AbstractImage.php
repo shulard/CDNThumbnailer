@@ -101,7 +101,7 @@ abstract class AbstractImage
 			$this->type = exif_imagetype($sPath);
 		//Else use extension detection
 		else {
-			$sExtension = strtolower(substr($sPath, strrpos($sPath, '.')));
+			$sExtension = strtolower(substr($sPath, strrpos($sPath, '.') + 1 ));
 			switch ($sExtension) {
 				case 'png':
 					$this->type = IMAGETYPE_PNG;

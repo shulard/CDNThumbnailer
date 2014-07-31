@@ -19,6 +19,11 @@ $aFormat = explode('x', $_GET['format']);
 //Image url scheme if image is an external one
 $sScheme = isset($_GET['scheme'])?$_GET['scheme']:null;
 
+$query = array_diff_key($_GET, array_flip(array('path', 'format', 'scheme')));
+if( count($query) > 0 ) {
+	$sPath .= '?'.http_build_query($query);
+}
+
 $sCache = realpath(CACHE_FOLDER).(isset($sScheme)?'/'.$sScheme:"");
 $sCleanedPath = str_replace(array('?','=','&'), array('_','_','_'), $sPath);
 

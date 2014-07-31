@@ -9,5 +9,13 @@
             "email": "s.hulard@chstudio.fr"
         }
     ],
-    "require": {}
+    "require": {},
+    "scripts": {
+        "post-install-cmd": [
+            "cp SAMPLE.htaccess .htaccess",
+            "cp config/SAMPLE.config.inc.php config/config.inc.php",
+            "rm -rf cache && mkdir cache",
+            "chmod 777 cache"
+        ]
+    }
 }

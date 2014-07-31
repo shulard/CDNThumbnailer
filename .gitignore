@@ -8,7 +8,7 @@ nbproject
 *.sublime-workspace
 
 #Composer
-composer.lock
+vendor
 
 #Project specific
 cache

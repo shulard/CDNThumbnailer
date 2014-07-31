@@ -53,7 +53,7 @@ abstract class AbstractImage
 
 		if( !is_file($sPath) || !is_readable( $sPath ))
 			throw new Exception("File path given is not a valid one!!");
-			
+
 		//Initialize image resource
 		$this->retrieveType($sPath);
 		$this->buildResource($sPath);
@@ -97,10 +97,14 @@ abstract class AbstractImage
 	 */
 	protected function retrieveType($sPath) {
 		//If method to extract image type exists, use it
-		if( function_exists("exif_imagetype") )
+		if( function_exists("exif_imagetype") ) {
 			$this->type = exif_imagetype($sPath);
+		} elseif( function_exists("getimagesize") ) {
+			if( ($tmp = getimagesize($sPath)) !== false ) {
+				$this->type = $tmp[2];
+			}
 		//Else use extension detection
-		else {
+		} else {
 			$sExtension = strtolower(substr($sPath, strrpos($sPath, '.') + 1 ));
 			switch ($sExtension) {
 				case 'png':
@@ -172,14 +176,14 @@ abstract class AbstractImage
 
 	/**
 	 * Destroy image resource if loaded
-	 */ 
+	 */
 	abstract protected function destroyResource();
 
 	/**
 	 * Resize the picture at a given size
 	 * @param Integer $iWidth Width of the result image
 	 * @param Integer $iHeight Height of the result image
-	 */ 
+	 */
 	abstract public function resize( $iWidth = null, $iHeight = null );
 	/**
 	 * Crop the picture from center at a given size
@@ -187,7 +191,7 @@ abstract class AbstractImage
 	 * @param Integer $iY Y position to start crop
 	 * @param Integer $iWidth Width to crop
 	 * @param Integer $iHeight Height to crop
-	 */ 
+	 */
 	abstract public function crop( $iX, $iY, $iWidth, $iHeight );
 
 	/**

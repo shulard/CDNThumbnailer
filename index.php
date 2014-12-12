@@ -79,15 +79,8 @@ if( !is_dir($sResizedDir) ) {
 
 try
 {
-	//If image magick use it
-	if( extension_loaded('imagick') ) {
-		require_once dirname(__FILE__).'/src/Image/ImagickImage.php';
-		$oResized = new ImagickImage($sOriginalFile);
-	//Else just use GD
-	} else {
-		require_once dirname(__FILE__).'/src/Image/GDImage.php';
-		$oResized = new GDImage($sOriginalFile);
-	}
+	require_once dirname(__FILE__).'/src/Image/ImageFactory.php';
+	$oResized = ImageFactory::build($sOriginalFile);
 
 	if( !is_file($sResizedFile) ) {
 		//Resize on width constraint only

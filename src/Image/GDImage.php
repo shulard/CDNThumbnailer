@@ -77,15 +77,17 @@ class GDImage extends AbstractImage
 	 */
 	public function crop($iX, $iY, $iWidth, $iHeight) {
 		//Be sure that the requested crop is inside the current image
-		if( $iX + $iWidth > $this->width || $iY + $iHeight > $this->height )
+		if( $iX + $iWidth > $this->width || $iY + $iHeight > $this->height ) {
 			throw new Exception( 'Crop area requested is outside the current picture !!');
-		
+		}
+
 		//Build result resource
 		$oCurrent = $this->resource;
-		if(function_exists("ImageCreateTrueColor"))
+		if(function_exists("ImageCreateTrueColor")) {
 			$oResized = ImageCreateTrueColor($iWidth,$iHeight);
-		else
+		} else {
 			$oResized = ImageCreate($iWidth,$iHeight);
+		}
 		//Compute resize
 		imagecopyresampled( $oResized, $this->resource, 0, 0, $iX, $iY, $iWidth, $iHeight, $iWidth, $iHeight );
 
@@ -96,7 +98,7 @@ class GDImage extends AbstractImage
 		$this->height = $iHeight;
 	}
 
-	/** 
+	/**
 	 * @see AbstractImage::save
 	 */
 	public function save( $sPath ) {

@@ -51,8 +51,9 @@ abstract class AbstractImage
 		$this->type = 0;
 		$this->resource = null;
 
-		if( !is_file($sPath) || !is_readable( $sPath ))
+		if( !is_file($sPath) || !is_readable( $sPath )) {
 			throw new Exception("File path given is not a valid one!!");
+		}
 
 		//Initialize image resource
 		$this->retrieveType($sPath);
@@ -117,11 +118,18 @@ abstract class AbstractImage
 				case 'gif':
 					$this->type = IMAGETYPE_GIF;
 					break;
+				case 'bmp':
+					$this->type = IMAGETYPE_BMP;
+					break;
+				default:
+					throw new Exception('Unrecognized image format: '.$sExtension);
+					break;
 			}
 		}
 
-		if( !in_array($this->type, array(IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_JPEG)) )
-			throw new Exception('Image type given is not a valid one, only GIF, PNG and JPG are allowed');
+		if( in_array($this->type, array(IMAGETYPE_SWF, IMAGETYPE_PSD, IMAGETYPE_SWC)) ) {
+			throw new Exception('Only valid images are allowed!');
+		}
 	}
 
 	/**
@@ -134,30 +142,28 @@ abstract class AbstractImage
 		$iRatio = (int) $iWidth / (int) $iHeight;
 
     // if media is a square
-    if ($iRatio == 1)
-    {
-      if ($this->width > $this->height)
+    if ($iRatio == 1) {
+      if ($this->width > $this->height) {
         $this->resize(null, $iHeight);
-      else
+      } else {
         $this->resize($iWidth, null);
-    }
+      }
     // horizontal format
-    elseif ($iRatio > 1)
-    {
+    } elseif ($iRatio > 1) {
       $iTmpRatio = $this->width / $iWidth;
-      if (($this->height / $iTmpRatio) < $iHeight)
+      if (($this->height / $iTmpRatio) < $iHeight) {
         $this->resize(null, $iHeight);
-      else
+      } else {
         $this->resize($iWidth, null);
-    }
+      }
     // vertical format
-    elseif ($iRatio < 1)
-    {
+    } elseif ($iRatio < 1) {
       $iTmpRatio = $this->height / $iHeight;
-      if (($this->width / $iTmpRatio) < $iWidth)
+      if (($this->width / $iTmpRatio) < $iWidth) {
         $this->resize($iWidth, '');
-      else
+      } else {
         $this->resize('', $iHeight);
+      }
     }
 
     $this->crop(

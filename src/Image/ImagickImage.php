@@ -48,13 +48,14 @@ class ImagickImage extends AbstractImage
 	 * @see AbstractImage::buildResource
 	 */
 	protected function destroyResource() {
-		if( $this->resource instanceof Imagick )
+		if( $this->resource instanceof Imagick ) {
 			$this->resource->destroy();
+		}
 	}
 
 	/**
 	 * @see AbstractImage::resizeAndCrop
-	 */	
+	 */
 	public function resizeAndCrop( $iWidth, $iHeight ) {
 		$this->resource->cropThumbnailImage($iWidth, $iHeight);
 	}
@@ -64,9 +65,10 @@ class ImagickImage extends AbstractImage
 	 */
 	public function crop($iX, $iY, $iWidth, $iHeight) {
 		//Be sure that the requested crop is inside the current image
-		if( $iX + $iWidth > $this->width || $iY + $iHeight > $this->height )
+		if( $iX + $iWidth > $this->width || $iY + $iHeight > $this->height ) {
 			throw new Exception( 'Crop area requested is outside the current picture !!');
-		
+		}
+
 		$this->resource->cropImage($iWidth, $iHeight, $iX, $iY);
 		$this->width = $iWidth;
 		$this->height = $iHeight;
@@ -77,17 +79,19 @@ class ImagickImage extends AbstractImage
 	 */
 	public function resize( $iWidth = null, $iHeight = null ) {
 		//If null given, compute a valid size
-		if( is_null( $iWidth ) )
+		if( is_null( $iWidth ) ) {
 			$iWidth = $this->width*$iHeight/$this->height;
-		if( is_null( $iHeight ) )
+		}
+		if( is_null( $iHeight ) ) {
 			$iHeight = $this->height*$iWidth/$this->width;
+		}
 
 		$this->resource->scaleImage($iWidth, $iHeight);
 		$this->width = $iWidth;
 		$this->height = $iHeight;
 	}
 
-	/** 
+	/**
 	 * @see AbstractImage::save
 	 */
 	public function save( $sPath ) {

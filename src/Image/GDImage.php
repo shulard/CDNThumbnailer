@@ -30,6 +30,18 @@ class GDImage extends AbstractImage
 	}
 
 	/**
+	 * Limitation on the GD library to GIF, PNG & JPEG
+	 * @see AbstractImage::retrieveType
+	 */
+	protected function retrieveType($sPath) {
+		parent::retrieveType($sPath);
+
+		if( !in_array($this->type, array(IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_JPEG)) ) {
+			throw new Exception('Image type given is not a valid one, only GIF, PNG and JPG are allowed');
+		}
+	}
+
+	/**
 	 * @see AbstractImage::buildResource
 	 */
 	protected function buildResource( $sPath ) {
@@ -42,8 +54,9 @@ class GDImage extends AbstractImage
 	 * @see AbstractImage::buildResource
 	 */
 	protected function destroyResource() {
-		if(is_resource($this->resource))
+		if(is_resource($this->resource)) {
 			imagedestroy($this->resource);
+		}
 	}
 
 	/**
@@ -51,17 +64,20 @@ class GDImage extends AbstractImage
 	 */
 	public function resize( $iWidth = null, $iHeight = null ) {
 		//If null given, compute a valid size
-		if( is_null( $iWidth ) )
+		if( is_null( $iWidth ) ) {
 			$iWidth = $this->width*$iHeight/$this->height;
-		if( is_null( $iHeight ) )
+		}
+		if( is_null( $iHeight ) ) {
 			$iHeight = $this->height*$iWidth/$this->width;
+		}
 
 		//Build result resource
 		$oCurrent = $this->resource;
-		if(function_exists("ImageCreateTrueColor"))
+		if(function_exists("ImageCreateTrueColor")) {
 			$oResized = ImageCreateTrueColor($iWidth,$iHeight);
-		else
+		} else {
 			$oResized = ImageCreate($iWidth,$iHeight);
+		}
 		//Compute resize
 		imagecopyresampled( $oResized, $this->resource, 0, 0, 0, 0, $iWidth, $iHeight, $this->width, $this->height );
 
@@ -77,15 +93,17 @@ class GDImage extends AbstractImage
 	 */
 	public function crop($iX, $iY, $iWidth, $iHeight) {
 		//Be sure that the requested crop is inside the current image
-		if( $iX + $iWidth > $this->width || $iY + $iHeight > $this->height )
+		if( $iX + $iWidth > $this->width || $iY + $iHeight > $this->height ) {
 			throw new Exception( 'Crop area requested is outside the current picture !!');
-		
+		}
+
 		//Build result resource
 		$oCurrent = $this->resource;
-		if(function_exists("ImageCreateTrueColor"))
+		if(function_exists("ImageCreateTrueColor")) {
 			$oResized = ImageCreateTrueColor($iWidth,$iHeight);
-		else
+		} else {
 			$oResized = ImageCreate($iWidth,$iHeight);
+		}
 		//Compute resize
 		imagecopyresampled( $oResized, $this->resource, 0, 0, $iX, $iY, $iWidth, $iHeight, $iWidth, $iHeight );
 
@@ -96,7 +114,7 @@ class GDImage extends AbstractImage
 		$this->height = $iHeight;
 	}
 
-	/** 
+	/**
 	 * @see AbstractImage::save
 	 */
 	public function save( $sPath ) {

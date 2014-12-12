@@ -119,12 +119,16 @@ abstract class AbstractImage
 					$this->type = IMAGETYPE_GIF;
 					break;
 				case 'bmp':
-
-		if( !in_array($this->type, array(IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_JPEG)) )
-			throw new Exception('Image type given is not a valid one, only GIF, PNG and JPG are allowed');
 					$this->type = IMAGETYPE_BMP;
 					break;
+				default:
+					throw new Exception('Unrecognized image format: '.$sExtension);
+					break;
 			}
+		}
+
+		if( in_array($this->type, array(IMAGETYPE_SWF, IMAGETYPE_PSD, IMAGETYPE_SWC)) ) {
+			throw new Exception('Only valid images are allowed!');
 		}
 	}
 

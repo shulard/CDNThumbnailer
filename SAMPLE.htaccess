@@ -12,8 +12,7 @@
 	RewriteRule ^(.*)$ cache/$1 [L]
 
 	#Else go to controller
-	RewriteRule ^(.*)\/([0-9]+x[0-9]+|original)\/(.*)$ index.php?path=$3&format=$2&scheme=$1 [L,QSA]
-	RewriteRule ^([0-9]+x[0-9]+)\/(.*)$ index.php?path=$2&format=$1 [L,QSA]
+	RewriteRule ^(|(.*)\/)([0-9]+x[0-9]+|w[0-9]+|h[0-9]+|original)\/(.*)$ index.php?path=$4&format=$3&scheme=$2 [L,QSA]
 </IfModule>
 
 ########################### MOD_DEFLATE COMPRESSION ############################

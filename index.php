@@ -9,16 +9,20 @@
  * @package Default
  */
 
+if( !isset($_GET['path']) || !isset($_GET['format']) ) {
+	header($_SERVER['SERVER_PROTOCOL'].' 400 Bad request', true, 400);
+	exit();
+}
+
 //Require configuration
 require_once dirname(__FILE__).'/config/config.inc.php';
 
 //File path to be resized
 $sPath = $_GET['path'];
-//Requested format (11x11)
-$aFormat = explode('x', $_GET['format']);
 //Image url scheme if image is an external one
 $sScheme = isset($_GET['scheme'])?$_GET['scheme']:null;
 
+//If there are GET parameters in the picture URL, just add it to the path
 $query = array_diff_key($_GET, array_flip(array('path', 'format', 'scheme')));
 if( count($query) > 0 ) {
 	$sPath .= '?'.http_build_query($query);
@@ -28,10 +32,10 @@ $sCache = realpath(CACHE_FOLDER).(isset($sScheme)?'/'.$sScheme:"");
 $sCleanedPath = str_replace(array('?','=','&'), array('_','_','_'), $sPath);
 
 //Define folder structure original contains base files and format folder are in the cache
-$sOriginalFile = $sCache.'/original/'.$sCleanedPath;
+$sOriginalFile = $sCache.'original/'.$sCleanedPath;
 $sOriginalDir = dirname($sOriginalFile);
 
-$sResizedFile = $sCache.'/'.$_GET['format'].'/'.$sCleanedPath;
+$sResizedFile = $sCache.$_GET['format'].'/'.$sCleanedPath;
 $sResizedDir = dirname($sResizedFile);
 
 //If the original file does not exists
@@ -86,8 +90,19 @@ try
 	}
 
 	if( !is_file($sResizedFile) ) {
-		//Use built Image manipulator to resize and save the new file
-		$oResized->resizeAndCrop($aFormat[0], $aFormat[1]);
+		//Resize on width constraint only
+		if( strpos($_GET['format'], 'w') === 0 ) {
+			$oResized->resize(substr($_GET['format'], 1));
+		//Resize on height constraint only
+		} elseif( strpos($_GET['format'], 'h') === 0 ) {
+			$oResized->resize(null, substr($_GET['format'], 1));
+		//Resize and crop (11x11)
+		} else {
+			$aFormat = explode('x', $_GET['format']);
+			//Use built Image manipulator to resize and save the new file
+			$oResized->resizeAndCrop($aFormat[0], $aFormat[1]);
+		}
+
 		$oResized->save($sResizedFile);
 	}
 

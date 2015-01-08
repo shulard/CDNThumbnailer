@@ -89,6 +89,12 @@ try
 		//Resize on height constraint only
 		} elseif( strpos($_GET['format'], 'h') === 0 ) {
 			$oResized->resize(null, substr($_GET['format'], 1));
+		} elseif( strpos($_GET['format'], 'max') === 0 ) {
+			if( $oResized->getWidth() > $oResized->getHeight() ) {
+				$oResized->resize(substr($_GET['format'], 3));
+			} else {
+				$oResized->resize(null, substr($_GET['format'], 3));
+			}
 		//Resize and crop (11x11)
 		} else {
 			$aFormat = explode('x', $_GET['format']);

@@ -40,6 +40,8 @@ class ImagickImage extends AbstractImage
 	 */
 	protected function buildResource( $sPath ) {
 		$this->resource = new Imagick($sPath);
+		//Limit Imagick to single thread -- https://bugs.php.net/bug.php?id=61122
+		$this->resource->setResourceLimit(6, 1);
 		$this->width = $this->resource->getImageWidth();
 		$this->height = $this->resource->getImageHeight();
 	}
@@ -49,7 +51,7 @@ class ImagickImage extends AbstractImage
 	 */
 	protected function destroyResource() {
 		if( $this->resource instanceof Imagick ) {
-			$this->resource->destroy();
+			$this->resource->clear();
 		}
 	}
 

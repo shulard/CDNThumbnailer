@@ -78,6 +78,9 @@ class GDImage extends AbstractImage
 		} else {
 			$oResized = ImageCreate($iWidth,$iHeight);
 		}
+		//Save alpha
+		imagealphablending($oResized, false);
+		imagesavealpha($oResized, true);
 		//Compute resize
 		imagecopyresampled( $oResized, $this->resource, 0, 0, 0, 0, $iWidth, $iHeight, $this->width, $this->height );
 
@@ -104,6 +107,9 @@ class GDImage extends AbstractImage
 		} else {
 			$oResized = ImageCreate($iWidth,$iHeight);
 		}
+		//Save alpha
+		imagealphablending($oResized, false);
+		imagesavealpha($oResized, true);
 		//Compute resize
 		imagecopyresampled( $oResized, $this->resource, 0, 0, $iX, $iY, $iWidth, $iHeight, $iWidth, $iHeight );
 

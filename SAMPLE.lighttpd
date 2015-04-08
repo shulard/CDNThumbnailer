@@ -1,0 +1,16 @@
+################################ EXPIRE HEADERS ################################
+$HTTP["url"] =~ "\.(ico|jpe?g|png|gif|swf|gz|ttf)$" {
+        expire.url = ( "" => "access plus 1 years" )
+}
+
+############################## UNSET ETAG HEADER ###############################
+etag.use-inode = "disable"
+etag.use-mtime = "disable"
+etag.use-size = "disable"
+static-file.etags = "disable"
+
+################################# REWRITE URLS #################################
+# Rewrite all non-file requests to /cache
+url.rewrite-repeat-if-not-file = ( "^/(.*)$" => "/cache/$1" )
+# If file is not found from /cache/, rewrite request to index.php
+url.rewrite-if-not-file = ( "^/cache/(|(http|https)\/)([0-9]+x[0-9]+|[a-z]+[0-9]+|original)\/(.*)$" => "index.php?scheme=$2&path=$4&format=$3" )

@@ -28,8 +28,9 @@ if( count($query) > 0 ) {
 	$sPath .= '?'.http_build_query($query);
 }
 
-$sCache = realpath(CACHE_FOLDER).(isset($sScheme)?'/'.$sScheme:"");
-$sCleanedPath = str_replace(array('?','=','&'), array('_','_','_'), $sPath);
+$sCache = realpath(CACHE_FOLDER).(isset($sScheme)?'/'.$sScheme.'/':"");
+//Cleanup invalid characters from the path
+$sCleanedPath = str_replace(array('?','=','&',':'), array('_','_','_','_'), $sPath);
 
 //Define folder structure original contains base files and format folder are in the cache
 $sOriginalFile = $sCache.'original/'.$sCleanedPath;
@@ -43,7 +44,15 @@ if( !is_file($sOriginalFile) ) {
 	//If the scheme is defined we try to download image
 	if( !is_null($sScheme) ) {
 		//Initialize curl handler and make the request
-		$oRequest = curl_init($sScheme.'://'.$sPath);
+		$oRequest = curl_init($sScheme.'://'.str_replace(' ', '%20', $sPath));
+		//Pretend to be a desktop browser
+		curl_setopt($oRequest, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36');
+		//Try and cope with some HTTPS servers
+		curl_setopt($oRequest, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oRequest, CURLOPT_SSL_VERIFYHOST, 2);
+		curl_setopt($oRequest, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
+		//Follow redirects
+		curl_setopt($oRequest, CURLOPT_FOLLOWLOCATION, true);
 		ob_start();
 		curl_exec($oRequest);
 		$sContent = ob_get_clean();
@@ -63,6 +72,8 @@ if( !is_file($sOriginalFile) ) {
 			header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found', true, 404);
 			exit();
 		}
+		//Close curl handle
+		curl_close($oRequest);
 	//The scheme is not defined and original file is not here, file does not exists
 	} else {
 		header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found', true, 404);
@@ -106,15 +117,17 @@ try
 	}
 
 	//Build valid HTTP Headers for cache and content type/length for a correct navigator management
-	$expires = 60*60*24*14;
+	$expires = 60*60*24*EXPIRE_DAYS;
 	header($_SERVER['SERVER_PROTOCOL'].' 200 OK', true, 200);
-	header("Pragma: public");
+//	header("Pragma: public");
 	header("Cache-Control: maxage=".$expires);
 	header('Expires: ' . gmdate('D, d M Y H:i:s', time()+$expires) . ' GMT');
 	header('Last-Modified: '.gmdate('D, d M Y H:i:s', filemtime($sResizedFile)).' GMT');
 	header('Content-Type: '.image_type_to_mime_type($oResized->getType()));
 	header('Content-Length: '.filesize($sResizedFile));
 	echo file_get_contents($sResizedFile);
+	//Unset ImageFactory object to make sure resources are released
+	unset($oResized);
 }
 //If errors are sent during resizing send HTTP 500 Errors
 catch( ImagickException $oError )

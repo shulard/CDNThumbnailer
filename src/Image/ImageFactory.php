@@ -25,7 +25,10 @@ final class ImageFactory
 	 */
 	public static function build($path) {
 		//If image magick use it
-		if( extension_loaded('imagick') ) {
+		//..but only for non-PNG images as certain PNG images
+		//cause ImageMagick to segfault
+		$useImagick = strtolower(substr($path, strrpos($path, '.') + 1 )) !== 'png';
+		if( $useImagick && extension_loaded('imagick') ) {
 			require_once dirname(__FILE__).'/ImagickImage.php';
 			$oResized = new ImagickImage($path);
 		//Else just use GD
